@@ -16,11 +16,11 @@ __all__ = [
     "Citation",
 ]
 
-from llmaven.agentic.settings import config
-from llmaven.agentic.exceptions import AgenticRAGError
-from llmaven.agentic.vector_store import QdrantManager
-from llmaven.agentic.ingestion import IngestionPipeline
-from llmaven.agentic.search import HybridSearcher
-from llmaven.agentic.search.models import SearchResult
-from llmaven.agentic.agent import RAGAgent
-from llmaven.agentic.agent.models import RAGResponse, Citation
+from llmoxie_rag.settings import config
+from llmoxie_rag.exceptions import AgenticRAGError
+from llmoxie_rag.vector_store import QdrantManager
+from llmoxie_rag.ingestion import IngestionPipeline
+from llmoxie_rag.search import HybridSearcher
+from llmoxie_rag.search.models import SearchResult
+from llmoxie_rag.agent import RAGAgent
+from llmoxie_rag.agent.models import RAGResponse, Citation

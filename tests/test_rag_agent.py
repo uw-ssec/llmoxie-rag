@@ -7,11 +7,11 @@ tool registration, agent execution, and error handling.
 import pytest
 from unittest.mock import Mock, patch, AsyncMock
 
-from llmaven.agentic.agent.rag_agent import RAGAgent, RAGAgentDependencies
-from llmaven.agentic.agent.models import RAGResponse, Citation
-from llmaven.agentic.search.hybrid_searcher import HybridSearcher
-from llmaven.agentic.search.models import SearchResult
-from llmaven.agentic.exceptions import AgenticRAGError
+from llmoxie_rag.agent.rag_agent import RAGAgent, RAGAgentDependencies
+from llmoxie_rag.agent.models import RAGResponse, Citation
+from llmoxie_rag.search.hybrid_searcher import HybridSearcher
+from llmoxie_rag.search.models import SearchResult
+from llmoxie_rag.exceptions import AgenticRAGError
 
 
 class TestRAGAgentDependencies:
@@ -36,9 +36,9 @@ class TestRAGAgentDependencies:
 class TestRAGAgentInitialization:
     """Test RAGAgent initialization."""
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     def test_init_with_default_config(
         self, mock_searcher_cls, mock_agent_cls, mock_create_llm
     ):
@@ -56,9 +56,9 @@ class TestRAGAgentInitialization:
         mock_agent_cls.assert_called_once()
         assert mock_agent_instance.tool.called  # Tool should be registered
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     def test_init_with_custom_collection(
         self, mock_searcher_cls, mock_agent_cls, mock_create_llm
     ):
@@ -74,8 +74,8 @@ class TestRAGAgentInitialization:
         assert agent.collection_name == "custom-collection"
         mock_searcher_cls.assert_called_once_with(collection_name="custom-collection")
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
     def test_init_with_custom_searcher(self, mock_agent_cls, mock_create_llm):
         """Test initialization with custom hybrid searcher."""
         mock_searcher = Mock(spec=HybridSearcher)
@@ -87,9 +87,9 @@ class TestRAGAgentInitialization:
 
         assert agent.hybrid_searcher == mock_searcher
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     def test_init_with_llm_provider_override(
         self, mock_searcher_cls, mock_agent_cls, mock_create_llm
     ):
@@ -108,16 +108,16 @@ class TestRAGAgentInitialization:
         call_args = mock_agent_cls.call_args
         assert call_args[0][0] == mock_llm_model
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     def test_init_raises_on_invalid_provider(
         self, mock_searcher_cls, mock_agent_cls, mock_create_llm
     ):
         """Test that initialization raises error for invalid provider."""
         mock_searcher = Mock()
         mock_searcher_cls.return_value = mock_searcher
-        from llmaven.agentic.exceptions import ProviderConfigurationError
+        from llmoxie_rag.exceptions import ProviderConfigurationError
 
         mock_create_llm.side_effect = ProviderConfigurationError(
             "Unsupported LLM provider"
@@ -128,9 +128,9 @@ class TestRAGAgentInitialization:
         ):
             RAGAgent(llm_provider="invalid-provider")
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     def test_init_raises_on_agent_error(
         self, mock_searcher_cls, mock_agent_cls, mock_create_llm
     ):
@@ -147,9 +147,9 @@ class TestRAGAgentInitialization:
 class TestRAGAgentModelName:
     """Test model name resolution."""
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     def test_get_model_name_openai(
         self, mock_searcher_cls, mock_agent_cls, mock_create_llm
     ):
@@ -166,9 +166,9 @@ class TestRAGAgentModelName:
         call_args = mock_agent_cls.call_args
         assert call_args[0][0] == mock_llm_model
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     def test_get_model_name_ollama(
         self, mock_searcher_cls, mock_agent_cls, mock_create_llm
     ):
@@ -189,9 +189,9 @@ class TestRAGAgentModelName:
 class TestRAGAgentRun:
     """Test RAGAgent run methods."""
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     @pytest.mark.asyncio
     async def test_run_async_success(
         self, mock_searcher_cls, mock_agent_cls, mock_create_llm
@@ -235,9 +235,9 @@ class TestRAGAgentRun:
         assert call_args[0][0] == "test query"
         assert "deps" in call_args[1]
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     @pytest.mark.asyncio
     async def test_run_with_message_history(
         self, mock_searcher_cls, mock_agent_cls, mock_create_llm
@@ -263,9 +263,9 @@ class TestRAGAgentRun:
         call_args = mock_agent_instance.run.call_args
         assert call_args[1]["message_history"] == message_history
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     @pytest.mark.asyncio
     async def test_run_raises_on_error(
         self, mock_searcher_cls, mock_agent_cls, mock_create_llm
@@ -284,9 +284,9 @@ class TestRAGAgentRun:
         with pytest.raises(AgenticRAGError, match="Agent execution failed"):
             await agent.run("test query")
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     def test_run_sync_success(self, mock_searcher_cls, mock_agent_cls, mock_create_llm):
         """Test successful synchronous run."""
         mock_searcher = Mock()
@@ -312,9 +312,9 @@ class TestRAGAgentRun:
 class TestRAGAgentTool:
     """Test RAGAgent tool registration and execution."""
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     def test_tool_registration(
         self, mock_searcher_cls, mock_agent_cls, mock_create_llm
     ):
@@ -330,9 +330,9 @@ class TestRAGAgentTool:
         # Verify tool decorator was called
         assert mock_agent_instance.tool.called
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     @pytest.mark.asyncio
     async def test_search_tool_execution(
         self, mock_searcher_cls, mock_agent_cls, mock_create_llm
@@ -378,9 +378,9 @@ class TestRAGAgentTool:
 class TestRAGAgentSystemPrompt:
     """Test RAGAgent system prompt."""
 
-    @patch("llmaven.agentic.agent.rag_agent.create_llm_model")
-    @patch("llmaven.agentic.agent.rag_agent.Agent")
-    @patch("llmaven.agentic.agent.rag_agent.HybridSearcher")
+    @patch("llmoxie_rag.agent.rag_agent.create_llm_model")
+    @patch("llmoxie_rag.agent.rag_agent.Agent")
+    @patch("llmoxie_rag.agent.rag_agent.HybridSearcher")
     def test_system_prompt_includes_instructions(
         self, mock_searcher_cls, mock_agent_cls, mock_create_llm
     ):

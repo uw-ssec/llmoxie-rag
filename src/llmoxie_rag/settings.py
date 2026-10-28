@@ -1,7 +1,7 @@
 """Configuration for Agentic RAG components.
 
 This module provides configuration management for the agentic RAG system
-using Pydantic Settings, following the pattern from llmaven.config.
+using Pydantic Settings, following the pattern from llmoxie's config.
 """
 
 from __future__ import annotations

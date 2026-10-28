@@ -12,8 +12,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pydantic_ai.models.openai import OpenAIChatModel
 
-from llmaven.agentic.exceptions import ProviderConfigurationError
-from llmaven.agentic.settings import config
+from llmoxie_rag.exceptions import ProviderConfigurationError
+from llmoxie_rag.settings import config
 
 
 def create_llm_model() -> OpenAIChatModel:

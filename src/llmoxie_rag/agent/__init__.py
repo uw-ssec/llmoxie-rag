@@ -10,5 +10,5 @@ __all__ = [
     "RAGResponse",
 ]
 
-from llmaven.agentic.agent.rag_agent import RAGAgent, RAGAgentDependencies
-from llmaven.agentic.agent.models import Citation, RAGResponse
+from llmoxie_rag.agent.rag_agent import RAGAgent, RAGAgentDependencies
+from llmoxie_rag.agent.models import Citation, RAGResponse

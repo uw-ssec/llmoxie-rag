@@ -9,10 +9,10 @@ import pytest
 from unittest.mock import Mock, patch, AsyncMock
 from fastapi.testclient import TestClient
 
-from llmaven.main import app
-from llmaven.agentic.search.models import SearchResult
-from llmaven.agentic.agent.models import RAGResponse, Citation
-from llmaven.agentic.exceptions import AgenticRAGError
+from llmoxie_rag.api.app import app
+from llmoxie_rag.search.models import SearchResult
+from llmoxie_rag.agent.models import RAGResponse, Citation
+from llmoxie_rag.exceptions import AgenticRAGError
 
 client = TestClient(app)
 
@@ -20,7 +20,7 @@ client = TestClient(app)
 class TestAgenticRetrieveEndpoint:
     """Test /v1/agentic/retrieve endpoint."""
 
-    @patch("llmaven.v1.endpoints.agentic_retrieve.HybridSearcher")
+    @patch("llmoxie_rag.api.agentic_retrieve.HybridSearcher")
     def test_retrieve_success(self, mock_searcher_cls):
         """Test successful retrieve request."""
         mock_searcher_instance = Mock()
@@ -66,7 +66,7 @@ class TestAgenticRetrieveEndpoint:
             final_top_k=5,
         )
 
-    @patch("llmaven.v1.endpoints.agentic_retrieve.HybridSearcher")
+    @patch("llmoxie_rag.api.agentic_retrieve.HybridSearcher")
     def test_retrieve_with_defaults(self, mock_searcher_cls):
         """Test retrieve with default parameters."""
         mock_searcher_instance = Mock()
@@ -83,7 +83,7 @@ class TestAgenticRetrieveEndpoint:
         assert data["total_results"] == 0
         assert len(data["results"]) == 0
 
-    @patch("llmaven.v1.endpoints.agentic_retrieve.HybridSearcher")
+    @patch("llmoxie_rag.api.agentic_retrieve.HybridSearcher")
     def test_retrieve_without_rerank(self, mock_searcher_cls):
         """Test retrieve without reranking."""
         mock_searcher_instance = Mock()
@@ -113,7 +113,7 @@ class TestAgenticRetrieveEndpoint:
         data = response.json()
         assert data["reranking_enabled"] is False
 
-    @patch("llmaven.v1.endpoints.agentic_retrieve.HybridSearcher")
+    @patch("llmoxie_rag.api.agentic_retrieve.HybridSearcher")
     def test_retrieve_handles_agentic_error(self, mock_searcher_cls):
         """Test that retrieve handles AgenticRAGError correctly."""
         mock_searcher_instance = Mock()
@@ -129,7 +129,7 @@ class TestAgenticRetrieveEndpoint:
         assert response.status_code == 500
         assert "Search failed" in response.json()["detail"]
 
-    @patch("llmaven.v1.endpoints.agentic_retrieve.HybridSearcher")
+    @patch("llmoxie_rag.api.agentic_retrieve.HybridSearcher")
     def test_retrieve_handles_unexpected_error(self, mock_searcher_cls):
         """Test that retrieve handles unexpected errors correctly."""
         mock_searcher_instance = Mock()
@@ -179,7 +179,7 @@ class TestAgenticRetrieveEndpoint:
 class TestAgenticChatEndpoint:
     """Test /v1/agentic/chat endpoint."""
 
-    @patch("llmaven.v1.endpoints.agentic_chat.RAGAgent")
+    @patch("llmoxie_rag.api.agentic_chat.RAGAgent")
     @pytest.mark.asyncio
     async def test_chat_success(self, mock_agent_cls):
         """Test successful chat request."""
@@ -227,7 +227,7 @@ class TestAgenticChatEndpoint:
             llm_model="gpt-4o-mini",
         )
 
-    @patch("llmaven.v1.endpoints.agentic_chat.RAGAgent")
+    @patch("llmoxie_rag.api.agentic_chat.RAGAgent")
     @pytest.mark.asyncio
     async def test_chat_with_message_history(self, mock_agent_cls):
         """Test chat with message history."""
@@ -255,7 +255,7 @@ class TestAgenticChatEndpoint:
         call_args = mock_agent_instance.run.call_args
         assert call_args[1]["message_history"] == payload["message_history"]
 
-    @patch("llmaven.v1.endpoints.agentic_chat.RAGAgent")
+    @patch("llmoxie_rag.api.agentic_chat.RAGAgent")
     @pytest.mark.asyncio
     async def test_chat_with_defaults(self, mock_agent_cls):
         """Test chat with default parameters."""
@@ -275,7 +275,7 @@ class TestAgenticChatEndpoint:
         data = response.json()
         assert data["answer"] == "Test answer"
 
-    @patch("llmaven.v1.endpoints.agentic_chat.RAGAgent")
+    @patch("llmoxie_rag.api.agentic_chat.RAGAgent")
     @pytest.mark.asyncio
     async def test_chat_handles_agentic_error(self, mock_agent_cls):
         """Test that chat handles AgenticRAGError correctly."""
@@ -290,7 +290,7 @@ class TestAgenticChatEndpoint:
         assert response.status_code == 500
         assert "Agent failed" in response.json()["detail"]
 
-    @patch("llmaven.v1.endpoints.agentic_chat.RAGAgent")
+    @patch("llmoxie_rag.api.agentic_chat.RAGAgent")
     @pytest.mark.asyncio
     async def test_chat_handles_unexpected_error(self, mock_agent_cls):
         """Test that chat handles unexpected errors correctly."""
@@ -321,7 +321,7 @@ class TestAgenticChatEndpoint:
 
         assert response.status_code == 422  # Validation error
 
-    @patch("llmaven.v1.endpoints.agentic_chat.RAGAgent")
+    @patch("llmoxie_rag.api.agentic_chat.RAGAgent")
     @pytest.mark.asyncio
     async def test_chat_with_conversation_id(self, mock_agent_cls):
         """Test chat with conversation ID (for tracking)."""
@@ -348,7 +348,7 @@ class TestAgenticChatEndpoint:
 class TestAgenticEndpointsIntegration:
     """Integration tests for agentic endpoints."""
 
-    @patch("llmaven.v1.endpoints.agentic_retrieve.HybridSearcher")
+    @patch("llmoxie_rag.api.agentic_retrieve.HybridSearcher")
     def test_retrieve_multiple_results(self, mock_searcher_cls):
         """Test retrieve with multiple results."""
         mock_searcher_instance = Mock()
@@ -381,7 +381,7 @@ class TestAgenticEndpointsIntegration:
         scores = [r["score"] for r in data["results"]]
         assert scores == sorted(scores, reverse=True)
 
-    @patch("llmaven.v1.endpoints.agentic_chat.RAGAgent")
+    @patch("llmoxie_rag.api.agentic_chat.RAGAgent")
     @pytest.mark.asyncio
     async def test_chat_with_multiple_citations(self, mock_agent_cls):
         """Test chat with multiple citations."""

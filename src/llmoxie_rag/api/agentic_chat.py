@@ -12,9 +12,9 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from llmaven.agentic.agent import RAGAgent
-from llmaven.agentic.agent.models import RAGResponse
-from llmaven.agentic.exceptions import AgenticRAGError
+from llmoxie_rag.agent import RAGAgent
+from llmoxie_rag.agent.models import RAGResponse
+from llmoxie_rag.exceptions import AgenticRAGError
 
 logger = logging.getLogger(__name__)
 

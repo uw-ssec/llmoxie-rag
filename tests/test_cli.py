@@ -15,8 +15,8 @@ except ImportError:
     # Fallback if typer.testing is not available
     CliRunner = None
 
-from llmaven.agentic.search.models import SearchResult
-from llmaven.agentic.exceptions import AgenticRAGError
+from llmoxie_rag.search.models import SearchResult
+from llmoxie_rag.exceptions import AgenticRAGError
 
 
 @pytest.fixture
@@ -30,7 +30,7 @@ def cli_runner():
 @pytest.fixture
 def mock_ingestion_pipeline():
     """Fixture for mocked IngestionPipeline."""
-    with patch("llmaven.agentic.ingestion.IngestionPipeline") as mock:
+    with patch("llmoxie_rag.ingestion.IngestionPipeline") as mock:
         pipeline_instance = Mock()
         pipeline_instance.ingest = Mock(return_value=None)
         mock.return_value = pipeline_instance
@@ -40,7 +40,7 @@ def mock_ingestion_pipeline():
 @pytest.fixture
 def mock_hybrid_searcher():
     """Fixture for mocked HybridSearcher."""
-    with patch("llmaven.agentic.search.HybridSearcher") as mock:
+    with patch("llmoxie_rag.search.HybridSearcher") as mock:
         searcher_instance = Mock()
         searcher_instance.search = Mock(
             return_value=[
@@ -61,7 +61,7 @@ def mock_hybrid_searcher():
 @pytest.fixture
 def mock_rag_agent():
     """Fixture for mocked RAGAgent."""
-    with patch("llmaven.agentic.agent.RAGAgent") as mock:
+    with patch("llmoxie_rag.agent.RAGAgent") as mock:
         agent_instance = Mock()
         agent_instance.run_sync = Mock(
             return_value=Mock(
@@ -80,18 +80,18 @@ class TestIngestCommand:
 
     def test_ingest_command_imports(self):
         """Test that ingest command can be imported."""
-        from llmaven.cli import agentic_app
+        from llmoxie_rag.cli import app
 
-        assert agentic_app is not None
+        assert app is not None
 
     @patch("pathlib.Path")
-    @patch("llmaven.agentic.ingestion.IngestionPipeline")
-    @patch("llmaven.cli.console_err")
+    @patch("llmoxie_rag.ingestion.IngestionPipeline")
+    @patch("llmoxie_rag.cli.console_err")
     def test_ingest_validates_directory_exists(
         self, mock_console_err, mock_pipeline_cls, mock_path_cls
     ):
         """Test that ingest validates directory exists."""
-        from llmaven.cli import ingest
+        from llmoxie_rag.cli import ingest
         import typer
 
         mock_path = Mock()
@@ -104,13 +104,13 @@ class TestIngestCommand:
         mock_console_err.print.assert_called()
 
     @patch("pathlib.Path")
-    @patch("llmaven.agentic.ingestion.IngestionPipeline")
-    @patch("llmaven.cli.console_err")
+    @patch("llmoxie_rag.ingestion.IngestionPipeline")
+    @patch("llmoxie_rag.cli.console_err")
     def test_ingest_validates_directory_is_dir(
         self, mock_console_err, mock_pipeline_cls, mock_path_cls
     ):
         """Test that ingest validates directory is actually a directory."""
-        from llmaven.cli import ingest
+        from llmoxie_rag.cli import ingest
         import typer
 
         mock_path = Mock()
@@ -124,10 +124,10 @@ class TestIngestCommand:
         mock_console_err.print.assert_called()
 
     @patch("pathlib.Path")
-    @patch("llmaven.agentic.ingestion.IngestionPipeline")
+    @patch("llmoxie_rag.ingestion.IngestionPipeline")
     def test_ingest_calls_pipeline_correctly(self, mock_pipeline_cls, mock_path_cls):
         """Test that ingest calls IngestionPipeline correctly."""
-        from llmaven.cli import ingest
+        from llmoxie_rag.cli import ingest
 
         mock_path = Mock()
         mock_path.exists.return_value = True
@@ -149,13 +149,13 @@ class TestIngestCommand:
         )
 
     @patch("pathlib.Path")
-    @patch("llmaven.agentic.ingestion.IngestionPipeline")
-    @patch("llmaven.cli.console_err")
+    @patch("llmoxie_rag.ingestion.IngestionPipeline")
+    @patch("llmoxie_rag.cli.console_err")
     def test_ingest_handles_agentic_error(
         self, mock_console_err, mock_pipeline_cls, mock_path_cls
     ):
         """Test that ingest handles AgenticRAGError correctly."""
-        from llmaven.cli import ingest
+        from llmoxie_rag.cli import ingest
         import typer
 
         mock_path = Mock()
@@ -177,10 +177,10 @@ class TestIngestCommand:
 class TestSearchCommand:
     """Test search CLI command."""
 
-    @patch("llmaven.agentic.search.HybridSearcher")
+    @patch("llmoxie_rag.search.HybridSearcher")
     def test_search_calls_searcher_correctly(self, mock_searcher_cls):
         """Test that search calls HybridSearcher correctly."""
-        from llmaven.cli import search
+        from llmoxie_rag.cli import search
 
         mock_searcher_instance = Mock()
         mock_searcher_instance.search = Mock(
@@ -215,11 +215,11 @@ class TestSearchCommand:
             query="test query", limit=10
         )
 
-    @patch("llmaven.agentic.search.HybridSearcher")
-    @patch("llmaven.cli.console")
+    @patch("llmoxie_rag.search.HybridSearcher")
+    @patch("llmoxie_rag.cli.console")
     def test_search_handles_empty_results(self, mock_console, mock_searcher_cls):
         """Test that search handles empty results gracefully."""
-        from llmaven.cli import search
+        from llmoxie_rag.cli import search
 
         mock_searcher_instance = Mock()
         mock_searcher_instance.search = Mock(return_value=[])
@@ -229,11 +229,11 @@ class TestSearchCommand:
 
         mock_console.print.assert_called()
 
-    @patch("llmaven.agentic.search.HybridSearcher")
-    @patch("llmaven.cli.console_err")
+    @patch("llmoxie_rag.search.HybridSearcher")
+    @patch("llmoxie_rag.cli.console_err")
     def test_search_handles_agentic_error(self, mock_console_err, mock_searcher_cls):
         """Test that search handles AgenticRAGError correctly."""
-        from llmaven.cli import search
+        from llmoxie_rag.cli import search
         import typer
 
         mock_searcher_instance = Mock()
@@ -251,11 +251,11 @@ class TestSearchCommand:
 class TestChatCommand:
     """Test chat CLI command."""
 
-    @patch("llmaven.agentic.agent.RAGAgent")
-    @patch("llmaven.cli.console")
+    @patch("llmoxie_rag.agent.RAGAgent")
+    @patch("llmoxie_rag.cli.console")
     def test_chat_initializes_agent_correctly(self, mock_console, mock_agent_cls):
         """Test that chat initializes RAGAgent correctly."""
-        from llmaven.cli import chat
+        from llmoxie_rag.cli import chat
 
         mock_agent_instance = Mock()
         mock_agent_instance.run_sync = Mock(
@@ -282,11 +282,11 @@ class TestChatCommand:
             llm_model="llama2",
         )
 
-    @patch("llmaven.agentic.agent.RAGAgent")
-    @patch("llmaven.cli.console")
+    @patch("llmoxie_rag.agent.RAGAgent")
+    @patch("llmoxie_rag.cli.console")
     def test_chat_handles_exit_command(self, mock_console, mock_agent_cls):
         """Test that chat handles exit command."""
-        from llmaven.cli import chat
+        from llmoxie_rag.cli import chat
 
         mock_agent_instance = Mock()
         mock_agent_instance.run_sync = Mock(
@@ -310,14 +310,14 @@ class TestChatCommand:
         # Should not have called run_sync if user exits immediately
         # (though the exact behavior depends on implementation)
 
-    @patch("llmaven.agentic.agent.RAGAgent")
-    @patch("llmaven.cli.console")
-    @patch("llmaven.cli.console_err")
+    @patch("llmoxie_rag.agent.RAGAgent")
+    @patch("llmoxie_rag.cli.console")
+    @patch("llmoxie_rag.cli.console_err")
     def test_chat_handles_agentic_error(
         self, mock_console_err, mock_console, mock_agent_cls
     ):
         """Test that chat handles AgenticRAGError correctly."""
-        from llmaven.cli import chat
+        from llmoxie_rag.cli import chat
 
         mock_agent_instance = Mock()
         mock_agent_instance.run_sync = Mock(side_effect=AgenticRAGError("Agent failed"))
@@ -338,10 +338,10 @@ class TestCLIIntegration:
     """Integration tests for CLI commands."""
 
     @patch("pathlib.Path")
-    @patch("llmaven.agentic.ingestion.IngestionPipeline")
+    @patch("llmoxie_rag.ingestion.IngestionPipeline")
     def test_ingest_multiple_directories(self, mock_pipeline_cls, mock_path_cls):
         """Test that ingest handles multiple directories."""
-        from llmaven.cli import ingest
+        from llmoxie_rag.cli import ingest
 
         # Create mock paths for multiple directories
         mock_path1 = Mock()

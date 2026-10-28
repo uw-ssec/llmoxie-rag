@@ -8,9 +8,9 @@ import pytest
 from unittest.mock import Mock, patch
 import numpy as np
 
-from llmaven.agentic.search.hybrid_searcher import HybridSearcher
-from llmaven.agentic.search.models import SearchResult
-from llmaven.agentic.exceptions import SearchError, EmbeddingError
+from llmoxie_rag.search.hybrid_searcher import HybridSearcher
+from llmoxie_rag.search.models import SearchResult
+from llmoxie_rag.exceptions import SearchError, EmbeddingError
 from qdrant_client.models import ScoredPoint
 
 
@@ -27,7 +27,7 @@ class TestHybridSearcherInitialization:
 
     def test_init_with_default_config(self):
         """Test initialization with default config."""
-        with patch("llmaven.agentic.search.hybrid_searcher.QdrantManager"):
+        with patch("llmoxie_rag.search.hybrid_searcher.QdrantManager"):
             searcher = HybridSearcher()
             assert searcher.collection_name == "agentic-rag"
             assert searcher.enable_rerank is True
@@ -37,7 +37,7 @@ class TestHybridSearcherInitialization:
 
     def test_init_with_custom_settings(self):
         """Test initialization with custom settings."""
-        with patch("llmaven.agentic.search.hybrid_searcher.QdrantManager"):
+        with patch("llmoxie_rag.search.hybrid_searcher.QdrantManager"):
             searcher = HybridSearcher(
                 collection_name="custom-collection",
                 enable_rerank=False,
@@ -59,10 +59,10 @@ class TestHybridSearcherInitialization:
 class TestHybridSearcherModelLoading:
     """Test embedding model loading."""
 
-    @patch("llmaven.agentic.search.hybrid_searcher.LateInteractionTextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.SparseTextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.TextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.LateInteractionTextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.SparseTextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.TextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_ensure_models_loaded(
         self, mock_manager, mock_dense, mock_sparse, mock_colbert
     ):
@@ -75,10 +75,10 @@ class TestHybridSearcherModelLoading:
         mock_colbert.assert_called_once()
         assert searcher._models_initialized is True
 
-    @patch("llmaven.agentic.search.hybrid_searcher.LateInteractionTextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.SparseTextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.TextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.LateInteractionTextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.SparseTextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.TextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_ensure_models_loaded_skip_colbert_when_rerank_disabled(
         self, mock_manager, mock_dense, mock_sparse, mock_colbert
     ):
@@ -91,8 +91,8 @@ class TestHybridSearcherModelLoading:
         mock_colbert.assert_not_called()
         assert searcher._models_initialized is True
 
-    @patch("llmaven.agentic.search.hybrid_searcher.TextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.TextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_ensure_models_loaded_raises_on_error(self, mock_manager, mock_dense):
         """Test that model loading errors are caught and wrapped."""
         mock_dense.side_effect = Exception("Model loading failed")
@@ -101,8 +101,8 @@ class TestHybridSearcherModelLoading:
         with pytest.raises(EmbeddingError):
             searcher._ensure_models_loaded()
 
-    @patch("llmaven.agentic.search.hybrid_searcher.TextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.TextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_ensure_models_loaded_only_once(self, mock_manager, mock_dense):
         """Test that models are only loaded once (lazy loading)."""
         searcher = HybridSearcher()
@@ -116,10 +116,10 @@ class TestHybridSearcherModelLoading:
 class TestHybridSearcherQueryEmbedding:
     """Test query embedding generation."""
 
-    @patch("llmaven.agentic.search.hybrid_searcher.LateInteractionTextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.SparseTextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.TextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.LateInteractionTextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.SparseTextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.TextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_generate_query_embeddings_success(
         self, mock_manager, mock_dense_cls, mock_sparse_cls, mock_colbert_cls
     ):
@@ -153,9 +153,9 @@ class TestHybridSearcherQueryEmbedding:
         assert query_vectors["sparse"]["values"] == [0.5, 0.3, 0.2]
         assert query_vectors["colbert"] == [[0.1, 0.2], [0.3, 0.4]]
 
-    @patch("llmaven.agentic.search.hybrid_searcher.SparseTextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.TextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.SparseTextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.TextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_generate_query_embeddings_without_rerank(
         self, mock_manager, mock_dense_cls, mock_sparse_cls
     ):
@@ -180,15 +180,15 @@ class TestHybridSearcherQueryEmbedding:
         assert "sparse" in query_vectors
         assert "colbert" not in query_vectors
 
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_generate_query_embeddings_empty_query(self, mock_manager):
         """Test that empty query raises SearchError."""
         searcher = HybridSearcher()
         with pytest.raises(SearchError, match="Query cannot be empty"):
             searcher._generate_query_embeddings("")
 
-    @patch("llmaven.agentic.search.hybrid_searcher.TextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.TextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_generate_query_embeddings_raises_on_error(
         self, mock_manager, mock_dense_cls
     ):
@@ -205,10 +205,10 @@ class TestHybridSearcherQueryEmbedding:
 class TestHybridSearcherSearch:
     """Test hybrid search execution."""
 
-    @patch("llmaven.agentic.search.hybrid_searcher.LateInteractionTextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.SparseTextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.TextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.LateInteractionTextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.SparseTextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.TextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_search_success_with_rerank(
         self, mock_manager_cls, mock_dense_cls, mock_sparse_cls, mock_colbert_cls
     ):
@@ -281,9 +281,9 @@ class TestHybridSearcherSearch:
         assert "sparse" in call_kwargs["query_vectors"]
         assert "colbert" in call_kwargs["query_vectors"]
 
-    @patch("llmaven.agentic.search.hybrid_searcher.SparseTextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.TextEmbedding")
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.SparseTextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.TextEmbedding")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_search_success_without_rerank(
         self, mock_manager_cls, mock_dense_cls, mock_sparse_cls
     ):
@@ -328,7 +328,7 @@ class TestHybridSearcherSearch:
         # ColBERT vector should not be generated when rerank is disabled
         assert "colbert" not in call_kwargs["query_vectors"]
 
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_search_with_custom_parameters(self, mock_manager_cls):
         """Test search with custom override parameters."""
         mock_manager = Mock()
@@ -353,7 +353,7 @@ class TestHybridSearcherSearch:
         assert call_kwargs["enable_rerank"] is False
         assert call_kwargs["prefetch_top_k"] == 50
 
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_search_empty_results(self, mock_manager_cls):
         """Test search with no results."""
         mock_manager = Mock()
@@ -368,7 +368,7 @@ class TestHybridSearcherSearch:
 
         assert results == []
 
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_search_raises_on_embedding_error(self, mock_manager_cls):
         """Test that embedding errors are propagated."""
         mock_manager_cls.return_value = Mock()
@@ -380,7 +380,7 @@ class TestHybridSearcherSearch:
             with pytest.raises(EmbeddingError):
                 searcher.search("test query")
 
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_search_raises_on_qdrant_error(self, mock_manager_cls):
         """Test that Qdrant search errors are wrapped in SearchError."""
         mock_manager = Mock()
@@ -398,7 +398,7 @@ class TestHybridSearcherSearch:
 class TestHybridSearcherResultConversion:
     """Test conversion of ScoredPoint to SearchResult."""
 
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_result_with_all_fields(self, mock_manager_cls):
         """Test result conversion with all payload fields."""
         mock_manager = Mock()
@@ -428,7 +428,7 @@ class TestHybridSearcherResultConversion:
         assert result.chunk_index == 3
         assert result.content_hash == "xyz789"
 
-    @patch("llmaven.agentic.search.hybrid_searcher.QdrantManager")
+    @patch("llmoxie_rag.search.hybrid_searcher.QdrantManager")
     def test_result_with_minimal_fields(self, mock_manager_cls):
         """Test result conversion with minimal payload fields."""
         mock_manager = Mock()

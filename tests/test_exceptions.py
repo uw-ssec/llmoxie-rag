@@ -6,7 +6,7 @@ and error handling behavior.
 
 import pytest
 
-from llmaven.agentic.exceptions import (
+from llmoxie_rag.exceptions import (
     AgenticRAGError,
     IngestionError,
     QdrantConnectionError,
@@ -161,14 +161,14 @@ class TestExceptionImportability:
 
     def test_base_exception_importable_from_package(self):
         """Test that base exception is importable from package."""
-        from llmaven.agentic import AgenticRAGError
+        from llmoxie_rag import AgenticRAGError
 
         assert AgenticRAGError is not None
         assert issubclass(AgenticRAGError, Exception)
 
     def test_all_exceptions_importable(self):
         """Test that all exceptions can be imported."""
-        from llmaven.agentic.exceptions import (
+        from llmoxie_rag.exceptions import (
             AgenticRAGError,
             IngestionError,
             QdrantConnectionError,

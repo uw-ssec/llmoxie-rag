@@ -20,8 +20,8 @@ from qdrant_client.models import (
     ScoredPoint,
 )
 
-from llmaven.agentic.settings import config
-from llmaven.agentic.exceptions import (
+from llmoxie_rag.settings import config
+from llmoxie_rag.exceptions import (
     QdrantConnectionError,
     CollectionNotFoundError,
 )

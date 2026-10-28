@@ -32,10 +32,10 @@ except ImportError:
 
 from fastembed import TextEmbedding, SparseTextEmbedding, LateInteractionTextEmbedding
 
-from llmaven.agentic.settings import config
-from llmaven.agentic.vector_store.qdrant_manager import QdrantManager
-from llmaven.agentic.search.models import SearchResult
-from llmaven.agentic.exceptions import SearchError, EmbeddingError
+from llmoxie_rag.settings import config
+from llmoxie_rag.vector_store.qdrant_manager import QdrantManager
+from llmoxie_rag.search.models import SearchResult
+from llmoxie_rag.exceptions import SearchError, EmbeddingError
 
 logger = logging.getLogger(__name__)
 

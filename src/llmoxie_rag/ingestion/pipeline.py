@@ -41,9 +41,9 @@ from rich.progress import (
     TaskProgressColumn,
 )
 
-from llmaven.agentic.settings import config
-from llmaven.agentic.vector_store.qdrant_manager import QdrantManager
-from llmaven.agentic.exceptions import IngestionError, EmbeddingError
+from llmoxie_rag.settings import config
+from llmoxie_rag.vector_store.qdrant_manager import QdrantManager
+from llmoxie_rag.exceptions import IngestionError, EmbeddingError
 from qdrant_client.models import PointStruct
 
 

@@ -8,7 +8,7 @@ import os
 import pytest
 from pydantic import ValidationError
 
-from llmaven.agentic.settings import AgenticConfig
+from llmoxie_rag.settings import AgenticConfig
 
 
 class TestAgenticConfigDefaults:
@@ -263,20 +263,20 @@ class TestAgenticConfigGlobalInstance:
 
     def test_global_config_exists(self):
         """Test that global config instance exists."""
-        from llmaven.agentic.settings import config
+        from llmoxie_rag.settings import config
 
         assert isinstance(config, AgenticConfig)
 
     def test_global_config_has_defaults(self):
         """Test that global config has default values."""
-        from llmaven.agentic.settings import config
+        from llmoxie_rag.settings import config
 
         assert config.qdrant_url == "http://localhost:6333"
         assert config.collection_name == "agentic-rag"
 
     def test_global_config_importable(self):
         """Test that global config can be imported from package."""
-        from llmaven.agentic import config
+        from llmoxie_rag import config
 
         assert isinstance(config, AgenticConfig)
 

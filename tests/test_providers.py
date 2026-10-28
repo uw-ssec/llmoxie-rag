@@ -8,7 +8,7 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-from llmaven.agentic.providers.factory import (
+from llmoxie_rag.providers.factory import (
     create_llm_model,
     _create_openai_model,
     _create_ollama_model,
@@ -16,7 +16,7 @@ from llmaven.agentic.providers.factory import (
     _create_azure_model,
     _create_huggingface_model,
 )
-from llmaven.agentic.exceptions import ProviderConfigurationError
+from llmoxie_rag.exceptions import ProviderConfigurationError
 
 
 class TestProviderFactory:
@@ -24,12 +24,12 @@ class TestProviderFactory:
 
     def test_create_openai_model(self):
         """Test creating OpenAI model."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.llm_provider = "openai"
             mock_config.llm_model = "gpt-4o-mini"
 
             with patch(
-                "llmaven.agentic.providers.factory._create_openai_model"
+                "llmoxie_rag.providers.factory._create_openai_model"
             ) as mock_create:
                 mock_create.return_value = MagicMock()
                 result = create_llm_model()
@@ -38,12 +38,12 @@ class TestProviderFactory:
 
     def test_create_ollama_model(self):
         """Test creating Ollama model."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.llm_provider = "ollama"
             mock_config.llm_model = "llama2"
 
             with patch(
-                "llmaven.agentic.providers.factory._create_ollama_model"
+                "llmoxie_rag.providers.factory._create_ollama_model"
             ) as mock_create:
                 mock_create.return_value = MagicMock()
                 result = create_llm_model()
@@ -52,13 +52,13 @@ class TestProviderFactory:
 
     def test_create_litellm_model(self):
         """Test creating LiteLLM model."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.llm_provider = "litellm"
             mock_config.llm_model = "gpt-4o-mini"
             mock_config.litellm_api_base = "http://localhost:4000"
 
             with patch(
-                "llmaven.agentic.providers.factory._create_litellm_model"
+                "llmoxie_rag.providers.factory._create_litellm_model"
             ) as mock_create:
                 mock_create.return_value = MagicMock()
                 result = create_llm_model()
@@ -67,14 +67,14 @@ class TestProviderFactory:
 
     def test_create_azure_model(self):
         """Test creating Azure model."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.llm_provider = "azure"
             mock_config.llm_model = "gpt-4o"
             mock_config.azure_endpoint = "https://myresource.openai.azure.com"
             mock_config.azure_api_key = "test-key"
 
             with patch(
-                "llmaven.agentic.providers.factory._create_azure_model"
+                "llmoxie_rag.providers.factory._create_azure_model"
             ) as mock_create:
                 mock_create.return_value = MagicMock()
                 result = create_llm_model()
@@ -83,7 +83,7 @@ class TestProviderFactory:
 
     def test_create_huggingface_model_not_implemented(self):
         """Test that HuggingFace provider raises NotImplementedError."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.llm_provider = "huggingface"
 
             with pytest.raises(
@@ -93,7 +93,7 @@ class TestProviderFactory:
 
     def test_unsupported_provider(self):
         """Test that unsupported provider raises ProviderConfigurationError."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.llm_provider = "invalid_provider"
 
             with pytest.raises(
@@ -111,7 +111,7 @@ class TestOpenAIProvider:
         """Test creating OpenAI model directly."""
         from unittest.mock import ANY
 
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.llm_model = "gpt-4o-mini"
             mock_provider_instance = MagicMock()
             mock_provider_class.return_value = mock_provider_instance
@@ -134,7 +134,7 @@ class TestOllamaProvider:
     @patch.dict("os.environ", {}, clear=True)
     def test_create_ollama_model_defaults(self, mock_provider_class, mock_model_class):
         """Test creating Ollama model with default settings."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.llm_model = "llama2"
             mock_provider_instance = MagicMock()
             mock_provider_class.return_value = mock_provider_instance
@@ -165,7 +165,7 @@ class TestOllamaProvider:
         self, mock_provider_class, mock_model_class
     ):
         """Test creating Ollama model with custom environment variables."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.llm_model = "llama2"
             mock_provider_instance = MagicMock()
             mock_provider_class.return_value = mock_provider_instance
@@ -194,7 +194,7 @@ class TestLiteLLMProvider:
     @patch("pydantic_ai.providers.openai.OpenAIProvider")
     def test_create_litellm_model_success(self, mock_provider_class, mock_model_class):
         """Test creating LiteLLM model with valid configuration."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.litellm_api_base = "http://localhost:4000"
             mock_config.litellm_api_key = "test-key"
             mock_config.litellm_model_prefix = "openai/"
@@ -224,7 +224,7 @@ class TestLiteLLMProvider:
         self, mock_provider_class, mock_model_class
     ):
         """Test creating LiteLLM model without model prefix."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.litellm_api_base = "http://localhost:4000"
             mock_config.litellm_api_key = None
             mock_config.litellm_model_prefix = ""
@@ -250,7 +250,7 @@ class TestLiteLLMProvider:
 
     def test_create_litellm_model_missing_base_url(self):
         """Test that missing LiteLLM base URL raises error."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.litellm_api_base = None
 
             with pytest.raises(
@@ -270,7 +270,7 @@ class TestAzureProvider:
         self, mock_http_client_class, mock_provider_class, mock_model_class
     ):
         """Test creating Azure model with valid configuration."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.azure_endpoint = "https://myresource.openai.azure.com"
             mock_config.azure_api_key = "test-key"
             mock_config.azure_deployment_name = "gpt-4o-deployment"
@@ -311,7 +311,7 @@ class TestAzureProvider:
         self, mock_http_client_class, mock_provider_class, mock_model_class
     ):
         """Test creating Azure model without deployment name (uses model name)."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.azure_endpoint = "https://myresource.openai.azure.com"
             mock_config.azure_api_key = "test-key"
             mock_config.azure_deployment_name = None
@@ -340,7 +340,7 @@ class TestAzureProvider:
 
     def test_create_azure_model_missing_endpoint(self):
         """Test that missing Azure endpoint raises error."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.azure_endpoint = None
             mock_config.azure_api_key = "test-key"
 
@@ -352,7 +352,7 @@ class TestAzureProvider:
 
     def test_create_azure_model_missing_api_key(self):
         """Test that missing Azure API key raises error."""
-        with patch("llmaven.agentic.providers.factory.config") as mock_config:
+        with patch("llmoxie_rag.providers.factory.config") as mock_config:
             mock_config.azure_endpoint = "https://myresource.openai.azure.com"
             mock_config.azure_api_key = None
 

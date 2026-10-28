@@ -13,8 +13,8 @@ from qdrant_client.models import (
     ScoredPoint,
 )
 
-from llmaven.agentic.vector_store.qdrant_manager import QdrantManager
-from llmaven.agentic.exceptions import (
+from llmoxie_rag.vector_store.qdrant_manager import QdrantManager
+from llmoxie_rag.exceptions import (
     QdrantConnectionError,
     CollectionNotFoundError,
 )
@@ -26,7 +26,7 @@ class TestQdrantManagerInitialization:
     def test_init_with_default_config(self):
         """Test initialization with default config."""
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient"
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient"
         ) as mock_client:
             manager = QdrantManager()
             assert manager.qdrant_url == "http://localhost:6333"
@@ -38,7 +38,7 @@ class TestQdrantManagerInitialization:
     def test_init_with_custom_url(self):
         """Test initialization with custom Qdrant URL."""
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient"
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient"
         ) as mock_client:
             manager = QdrantManager(qdrant_url="http://custom:6333")
             assert manager.qdrant_url == "http://custom:6333"
@@ -47,7 +47,7 @@ class TestQdrantManagerInitialization:
     def test_init_with_api_key(self):
         """Test initialization with API key."""
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient"
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient"
         ) as mock_client:
             manager = QdrantManager(qdrant_api_key="test-key")
             assert manager.qdrant_api_key == "test-key"
@@ -58,7 +58,7 @@ class TestQdrantManagerInitialization:
     def test_init_connection_error(self):
         """Test that connection errors are caught and wrapped."""
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient"
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient"
         ) as mock_client:
             mock_client.side_effect = Exception("Connection failed")
             with pytest.raises(QdrantConnectionError):
@@ -75,7 +75,7 @@ class TestQdrantManagerEnsureCollection:
         mock_client.collection_exists.return_value = False
 
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient",
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient",
             return_value=mock_client,
         ):
             manager = QdrantManager()
@@ -109,7 +109,7 @@ class TestQdrantManagerEnsureCollection:
         mock_client.collection_exists.return_value = True
 
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient",
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient",
             return_value=mock_client,
         ):
             manager = QdrantManager()
@@ -124,7 +124,7 @@ class TestQdrantManagerEnsureCollection:
         mock_client.collection_exists.return_value = True
 
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient",
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient",
             return_value=mock_client,
         ):
             manager = QdrantManager()
@@ -145,7 +145,7 @@ class TestQdrantManagerUpsertPoints:
         mock_client.upsert.return_value = None  # Success
 
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient",
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient",
             return_value=mock_client,
         ):
             manager = QdrantManager()
@@ -172,7 +172,7 @@ class TestQdrantManagerUpsertPoints:
         mock_client = MagicMock()
 
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient",
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient",
             return_value=mock_client,
         ):
             manager = QdrantManager()
@@ -199,7 +199,7 @@ class TestQdrantManagerUpsertPoints:
         mock_client.upsert.side_effect = Exception("Collection not found")
 
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient",
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient",
             return_value=mock_client,
         ):
             manager = QdrantManager()
@@ -243,7 +243,7 @@ class TestQdrantManagerSearch:
         ]
 
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient",
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient",
             return_value=mock_client,
         ):
             manager = QdrantManager()
@@ -280,7 +280,7 @@ class TestQdrantManagerSearch:
         ]
 
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient",
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient",
             return_value=mock_client,
         ):
             manager = QdrantManager()
@@ -305,7 +305,7 @@ class TestQdrantManagerValidation:
         mock_client.collection_exists.return_value = True
 
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient",
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient",
             return_value=mock_client,
         ):
             manager = QdrantManager()
@@ -317,7 +317,7 @@ class TestQdrantManagerValidation:
         mock_client.collection_exists.return_value = False
 
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient",
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient",
             return_value=mock_client,
         ):
             manager = QdrantManager()
@@ -328,7 +328,7 @@ class TestQdrantManagerValidation:
         mock_client = MagicMock()
 
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient",
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient",
             return_value=mock_client,
         ):
             manager = QdrantManager()
@@ -341,7 +341,7 @@ class TestQdrantManagerValidation:
         mock_client = MagicMock()
 
         with patch(
-            "llmaven.agentic.vector_store.qdrant_manager.QdrantClient",
+            "llmoxie_rag.vector_store.qdrant_manager.QdrantClient",
             return_value=mock_client,
         ):
             manager = QdrantManager()

@@ -1,12 +1,12 @@
-# Testcontainers Guide for LLMaven
+# Testcontainers Guide for LLMoxie RAG
 
-This guide explains how LLMaven uses testcontainers-python for running
+This guide explains how LLMoxie RAG uses testcontainers-python for running
 integration tests with Qdrant.
 
 ## Overview
 
 Instead of using GitHub Actions service containers (which only work on Linux),
-LLMaven uses **testcontainers-python** to programmatically manage Qdrant
+LLMoxie RAG uses **testcontainers-python** to programmatically manage Qdrant
 containers. This approach:
 
 - ✅ Works on both Linux and macOS (when Docker is available)
@@ -17,7 +17,7 @@ containers. This approach:
 
 ## How It Works
 
-### 1. Pytest Fixtures (`tests/agentic/conftest.py`)
+### 1. Pytest Fixtures (`tests/conftest.py`)
 
 The project provides session-scoped fixtures that start Qdrant containers once
 and share them across all tests:
@@ -81,7 +81,7 @@ jobs:
           docker ps
 
       - name: Run tests
-        run: pixi run -e llmaven pytest tests/agentic/ -v
+        run: pixi run test
         # Testcontainers will handle Qdrant automatically
 ```
 
@@ -238,12 +238,12 @@ def qdrant_container():
 
 ```python
 # Unit tests (no Qdrant)
-tests/agentic/test_models.py
-tests/agentic/test_exceptions.py
+tests/test_models.py
+tests/test_exceptions.py
 
 # Integration tests (with Qdrant)
-tests/agentic/test_qdrant_manager.py
-tests/agentic/test_ingestion_pipeline.py
+tests/test_qdrant_manager.py
+tests/test_ingestion_pipeline.py
 ```
 
 ### 3. Mark Integration Tests

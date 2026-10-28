@@ -11,11 +11,11 @@ from typing import Any
 
 from pydantic_ai import Agent, RunContext
 
-from llmaven.agentic.settings import config
-from llmaven.agentic.providers import create_llm_model
-from llmaven.agentic.search.hybrid_searcher import HybridSearcher
-from llmaven.agentic.agent.models import RAGResponse
-from llmaven.agentic.exceptions import AgenticRAGError, ProviderConfigurationError
+from llmoxie_rag.settings import config
+from llmoxie_rag.providers import create_llm_model
+from llmoxie_rag.search.hybrid_searcher import HybridSearcher
+from llmoxie_rag.agent.models import RAGResponse
+from llmoxie_rag.exceptions import AgenticRAGError, ProviderConfigurationError
 
 logger = logging.getLogger(__name__)
 

@@ -9,8 +9,8 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 import tempfile
 
-from llmaven.agentic.ingestion.pipeline import IngestionPipeline
-from llmaven.agentic.exceptions import IngestionError, EmbeddingError
+from llmoxie_rag.ingestion.pipeline import IngestionPipeline
+from llmoxie_rag.exceptions import IngestionError, EmbeddingError
 
 
 @pytest.fixture
@@ -34,7 +34,7 @@ class TestIngestionPipelineInitialization:
         """Test initialization with default config."""
         mock_qdrant_manager = MagicMock()
         with patch(
-            "llmaven.agentic.ingestion.pipeline.QdrantManager",
+            "llmoxie_rag.ingestion.pipeline.QdrantManager",
             return_value=mock_qdrant_manager,
         ):
             pipeline = IngestionPipeline()
@@ -45,7 +45,7 @@ class TestIngestionPipelineInitialization:
         """Test initialization with custom collection name."""
         mock_qdrant_manager = MagicMock()
         with patch(
-            "llmaven.agentic.ingestion.pipeline.QdrantManager",
+            "llmoxie_rag.ingestion.pipeline.QdrantManager",
             return_value=mock_qdrant_manager,
         ):
             pipeline = IngestionPipeline(collection_name="custom-collection")
@@ -67,7 +67,7 @@ class TestIngestionPipelineLoad:
 
             mock_qdrant_manager = MagicMock()
             with patch(
-                "llmaven.agentic.ingestion.pipeline.QdrantManager",
+                "llmoxie_rag.ingestion.pipeline.QdrantManager",
                 return_value=mock_qdrant_manager,
             ):
                 pipeline = IngestionPipeline()
@@ -92,7 +92,7 @@ class TestIngestionPipelineLoad:
 
             mock_qdrant_manager = MagicMock()
             with patch(
-                "llmaven.agentic.ingestion.pipeline.QdrantManager",
+                "llmoxie_rag.ingestion.pipeline.QdrantManager",
                 return_value=mock_qdrant_manager,
             ):
                 pipeline = IngestionPipeline()
@@ -104,7 +104,7 @@ class TestIngestionPipelineLoad:
         """Test loading from nonexistent directory raises error."""
         mock_qdrant_manager = MagicMock()
         with patch(
-            "llmaven.agentic.ingestion.pipeline.QdrantManager",
+            "llmoxie_rag.ingestion.pipeline.QdrantManager",
             return_value=mock_qdrant_manager,
         ):
             pipeline = IngestionPipeline()
@@ -119,7 +119,7 @@ class TestIngestionPipelineParse:
         """Test parsing a plain text file."""
         mock_qdrant_manager = MagicMock()
         with patch(
-            "llmaven.agentic.ingestion.pipeline.QdrantManager",
+            "llmoxie_rag.ingestion.pipeline.QdrantManager",
             return_value=mock_qdrant_manager,
         ):
             pipeline = IngestionPipeline()
@@ -137,7 +137,7 @@ class TestIngestionPipelineParse:
         """Test parsing a markdown file."""
         mock_qdrant_manager = MagicMock()
         with patch(
-            "llmaven.agentic.ingestion.pipeline.QdrantManager",
+            "llmoxie_rag.ingestion.pipeline.QdrantManager",
             return_value=mock_qdrant_manager,
         ):
             pipeline = IngestionPipeline()
@@ -166,7 +166,7 @@ class TestIngestionPipelineParse:
         mock_converter_instance.convert.return_value = mock_doc
 
         with patch(
-            "llmaven.agentic.ingestion.pipeline.QdrantManager",
+            "llmoxie_rag.ingestion.pipeline.QdrantManager",
             return_value=mock_qdrant_manager,
         ):
             pipeline = IngestionPipeline()
@@ -186,7 +186,7 @@ class TestIngestionPipelineParse:
         mock_converter.side_effect = Exception("Docling failed")
 
         with patch(
-            "llmaven.agentic.ingestion.pipeline.QdrantManager",
+            "llmoxie_rag.ingestion.pipeline.QdrantManager",
             return_value=mock_qdrant_manager,
         ):
             # Mock fitz import by patching sys.modules before the import happens
@@ -226,7 +226,7 @@ class TestIngestionPipelineChunk:
         """Test chunking simple text."""
         mock_qdrant_manager = MagicMock()
         with patch(
-            "llmaven.agentic.ingestion.pipeline.QdrantManager",
+            "llmoxie_rag.ingestion.pipeline.QdrantManager",
             return_value=mock_qdrant_manager,
         ):
             pipeline = IngestionPipeline()
@@ -257,7 +257,7 @@ class TestIngestionPipelineChunk:
         mock_converter_instance.convert.return_value = mock_doc
 
         with patch(
-            "llmaven.agentic.ingestion.pipeline.QdrantManager",
+            "llmoxie_rag.ingestion.pipeline.QdrantManager",
             return_value=mock_qdrant_manager,
         ):
             pipeline = IngestionPipeline()
@@ -278,9 +278,9 @@ class TestIngestionPipelineChunk:
 class TestIngestionPipelineEmbed:
     """Test embedding generation."""
 
-    @patch("llmaven.agentic.ingestion.pipeline.TextEmbedding")
-    @patch("llmaven.agentic.ingestion.pipeline.SparseTextEmbedding")
-    @patch("llmaven.agentic.ingestion.pipeline.LateInteractionTextEmbedding")
+    @patch("llmoxie_rag.ingestion.pipeline.TextEmbedding")
+    @patch("llmoxie_rag.ingestion.pipeline.SparseTextEmbedding")
+    @patch("llmoxie_rag.ingestion.pipeline.LateInteractionTextEmbedding")
     def test_embed_generates_all_three_vectors(
         self, mock_colbert, mock_sparse, mock_dense
     ):
@@ -300,7 +300,7 @@ class TestIngestionPipelineEmbed:
 
         mock_qdrant_manager = MagicMock()
         with patch(
-            "llmaven.agentic.ingestion.pipeline.QdrantManager",
+            "llmoxie_rag.ingestion.pipeline.QdrantManager",
             return_value=mock_qdrant_manager,
         ):
             pipeline = IngestionPipeline()
@@ -322,11 +322,11 @@ class TestIngestionPipelineEmbed:
         """Test that embedding errors are caught and wrapped."""
         mock_qdrant_manager = MagicMock()
         with patch(
-            "llmaven.agentic.ingestion.pipeline.QdrantManager",
+            "llmoxie_rag.ingestion.pipeline.QdrantManager",
             return_value=mock_qdrant_manager,
         ):
             with patch(
-                "llmaven.agentic.ingestion.pipeline.TextEmbedding"
+                "llmoxie_rag.ingestion.pipeline.TextEmbedding"
             ) as mock_dense:
                 mock_dense.side_effect = Exception("Embedding failed")
 
@@ -345,7 +345,7 @@ class TestIngestionPipelineUpsert:
         mock_qdrant_manager = MagicMock()
 
         with patch(
-            "llmaven.agentic.ingestion.pipeline.QdrantManager",
+            "llmoxie_rag.ingestion.pipeline.QdrantManager",
             return_value=mock_qdrant_manager,
         ):
             pipeline = IngestionPipeline()
@@ -392,17 +392,17 @@ class TestIngestionPipelineFullPipeline:
 
             mock_qdrant_manager = MagicMock()
             with patch(
-                "llmaven.agentic.ingestion.pipeline.QdrantManager",
+                "llmoxie_rag.ingestion.pipeline.QdrantManager",
                 return_value=mock_qdrant_manager,
             ):
                 with patch(
-                    "llmaven.agentic.ingestion.pipeline.TextEmbedding"
+                    "llmoxie_rag.ingestion.pipeline.TextEmbedding"
                 ) as mock_dense:
                     with patch(
-                        "llmaven.agentic.ingestion.pipeline.SparseTextEmbedding"
+                        "llmoxie_rag.ingestion.pipeline.SparseTextEmbedding"
                     ) as mock_sparse:
                         with patch(
-                            "llmaven.agentic.ingestion.pipeline.LateInteractionTextEmbedding"
+                            "llmoxie_rag.ingestion.pipeline.LateInteractionTextEmbedding"
                         ) as mock_colbert:
                             # Mock embeddings
                             mock_dense_instance = MagicMock()
@@ -440,17 +440,17 @@ class TestIngestionPipelineFullPipeline:
         ]
 
         with patch(
-            "llmaven.agentic.ingestion.pipeline.QdrantManager",
+            "llmoxie_rag.ingestion.pipeline.QdrantManager",
             return_value=mock_qdrant_manager,
         ):
             with patch(
-                "llmaven.agentic.ingestion.pipeline.TextEmbedding"
+                "llmoxie_rag.ingestion.pipeline.TextEmbedding"
             ) as mock_dense:
                 with patch(
-                    "llmaven.agentic.ingestion.pipeline.SparseTextEmbedding"
+                    "llmoxie_rag.ingestion.pipeline.SparseTextEmbedding"
                 ) as mock_sparse:
                     with patch(
-                        "llmaven.agentic.ingestion.pipeline.LateInteractionTextEmbedding"
+                        "llmoxie_rag.ingestion.pipeline.LateInteractionTextEmbedding"
                     ) as mock_colbert:
                         # Mock embeddings
                         mock_dense_instance = MagicMock()
