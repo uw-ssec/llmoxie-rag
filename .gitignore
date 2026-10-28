@@ -4,3 +4,9 @@
 
 # MacOS
 .DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
