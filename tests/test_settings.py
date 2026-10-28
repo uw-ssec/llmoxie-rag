@@ -318,3 +318,18 @@ class TestAgenticConfigEdgeCases:
         )
         assert config.prefetch_top_k == 1000
         assert config.final_top_k == 100
+
+
+# Embedding model llmoxie used (src/llmaven/agentic/settings.py:56-58).
+LLMOXIE_DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+
+
+def test_env_prefix_and_default_collection_unchanged(monkeypatch):
+    monkeypatch.setenv("AGENTIC_QDRANT_URL", "http://example:6333")
+    cfg = AgenticConfig()
+    assert cfg.qdrant_url == "http://example:6333"
+    assert cfg.collection_name == "agentic-rag"
+    # Changing an embedding model breaks search over existing collections.
+    assert cfg.sparse_model == "Qdrant/bm25"
+    assert cfg.colbert_model == "colbert-ir/colbertv2.0"
+    assert cfg.dense_model == LLMOXIE_DENSE_MODEL
