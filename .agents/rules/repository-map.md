@@ -16,15 +16,15 @@ its git history, and will grow into an MCP search service (llmoxie#72).
 - **Type:** Python package (`src/` layout, hatchling), import name
   `llmoxie_rag`, console script `llmoxie-rag`
 - **Language:** Python 3.12 (`requires-python = ">=3.12"`)
-- **Build System:** Pixi; the `rag` feature installs the package editable in
-  the `default` environment
+- **Build System:** Pixi; the `rag` feature installs the package editable in the
+  `default` environment
 - **Platform:** macOS (osx-arm64) and Linux (linux-64, linux-aarch64)
 - **License:** BSD 3-Clause
 
 Settings use the `AGENTIC_` environment-variable prefix
-(`src/llmoxie_rag/settings.py`), unchanged from llmoxie so existing `.env`
-files keep working. Don't change the embedding-model defaults: search over
-existing collections depends on them (`tests/test_settings.py` guards this).
+(`src/llmoxie_rag/settings.py`), unchanged from llmoxie so existing `.env` files
+keep working. Don't change the embedding-model defaults: search over existing
+collections depends on them (`tests/test_settings.py` guards this).
 
 ## Project Structure & Key Files
 

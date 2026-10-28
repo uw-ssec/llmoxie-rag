@@ -80,17 +80,20 @@ to single-vector search.
 The agentic RAG system consists of four main components:
 
 1. **Ingestion Pipeline** (`src/llmoxie_rag/ingestion/pipeline.py`)
+
    - Multi-format document processing with `docling`
    - Intelligent chunking that preserves document structure
    - Multi-vector embedding generation (Dense, Sparse, ColBERT)
    - Batch processing with progress indicators
 
 2. **Vector Store** (`src/llmoxie_rag/vector_store/qdrant_manager.py`)
+
    - Qdrant Named Vectors support
    - Collection management and validation
    - Hybrid search operations
 
 3. **Hybrid Search** (`src/llmoxie_rag/search/hybrid_searcher.py`)
+
    - Three-stage search pipeline:
      - **Prefetch**: Parallel Dense + Sparse vector queries
      - **Rerank**: Optional ColBERT MaxSim reranking
@@ -224,7 +227,6 @@ AGENTIC_PREFETCH_TOP_K=20
 AGENTIC_FINAL_TOP_K=5
 ```
 
-
 ## Project Structure
 
 This project is organized using Pixi features for modular dependency management:
@@ -285,8 +287,8 @@ pixi add your-package
 
 ## AI Agents
 
-The repository is set up for AI coding agents such as Claude Code, Codex, Copilot,
-Cursor, and Gemini CLI:
+The repository is set up for AI coding agents such as Claude Code, Codex,
+Copilot, Cursor, and Gemini CLI:
 
 - [`AGENTS.md`](AGENTS.md) is the agent entry point. It points to the rules in
   [`.agents/rules/`](.agents/rules/), which agents load on demand.
