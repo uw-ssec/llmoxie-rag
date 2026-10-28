@@ -22,6 +22,8 @@ dependencies = [
     "fastapi>=0.115.0,<1",
     "uvicorn>=0.30.0,<1",
     "httpx>=0.27.0",
+    # PDF fallback in ingestion/pipeline.py when docling fails
+    "pymupdf>=1.24.10,<1.25",
     # pydantic-ai <1.0 imports opentelemetry._events, which newer
     # opentelemetry-api releases removed (1.45.1 fails; 1.43.0 works).
     "opentelemetry-api<1.44",

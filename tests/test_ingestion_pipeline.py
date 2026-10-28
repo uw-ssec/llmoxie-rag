@@ -219,6 +219,35 @@ class TestIngestionPipelineParse:
                     del sys.modules["fitz"]
 
 
+    def test_parse_pdf_falls_back_to_real_pymupdf(self):
+        """A real PDF parses through real PyMuPDF when docling is unavailable.
+
+        Unlike test_parse_fallback_on_docling_error, nothing here fakes `fitz`,
+        so this fails if pymupdf isn't installed.
+        """
+        import sys
+
+        import fitz
+
+        pdf = fitz.open()
+        pdf.new_page().insert_text((72, 72), "Hello from a real PDF")
+        pdf_bytes = pdf.tobytes()
+        pdf.close()
+
+        with (
+            patch(
+                "llmoxie_rag.ingestion.pipeline.QdrantManager",
+                return_value=MagicMock(),
+            ),
+            # None in sys.modules makes `from docling.document_converter import`
+            # raise ImportError, forcing the fallback.
+            patch.dict(sys.modules, {"docling.document_converter": None}),
+        ):
+            pipeline = IngestionPipeline()
+            parsed = pipeline.parse({"file_path": "real.pdf", "content": pdf_bytes})
+
+        assert "Hello from a real PDF" in parsed["text"]
+
 class TestIngestionPipelineChunk:
     """Test document chunking functionality."""
 
