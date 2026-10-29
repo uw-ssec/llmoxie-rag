@@ -2,13 +2,13 @@
 # Project metadata and basic configuration
 authors = ["University of Washington Scientific Software Engineering Center"] # Project authors
 channels = ["https://prefix.dev/conda-forge"] # Conda channels for dependencies
-name = "project-template" # Project name
+name = "llmoxie-rag" # Project name
 platforms = ["osx-arm64", "linux-64", "linux-aarch64"] # Supported platforms for development and deployment
 version = "0.1.0" # Project version
 
 # The environment configurations for different development scenarios
 [environments]
-default = { features = ["pre-commit", "gh-cli", "okf"], solve-group = "default" } # The default development environment with pre-commit, GitHub CLI, and OKF agent memory
+default = { features = ["rag", "pre-commit", "gh-cli", "okf"], solve-group = "default" } # The default development environment: the llmoxie-rag package plus pre-commit, GitHub CLI, and OKF agent memory
 onboard = { features = ["pre-commit", "gh-cli", "onboard"], solve-group = "default" } # The onboarding environment with additional setup tasks
 
 # The project dependencies
@@ -19,6 +19,17 @@ onboard = { features = ["pre-commit", "gh-cli", "onboard"], solve-group = "defau
 
 # The main project tasks
 [tasks]
+
+# The llmoxie-rag package, installed editable with its test extra
+[feature.rag.dependencies]
+python = "3.12.*"
+
+[feature.rag.pypi-dependencies]
+llmoxie-rag = { path = ".", editable = true, extras = ["test"] }
+
+[feature.rag.tasks]
+test = { cmd = "pytest tests/ -v --ignore=tests/test_cli.py", description = "Run the test suite except the CLI tests (needs Docker for testcontainers)" }
+test-cli = { cmd = "pytest tests/test_cli.py -v", description = "Run the CLI tests" }
 
 # GitHub CLI feature for interacting with GitHub from the command line
 [feature.gh-cli.dependencies]
